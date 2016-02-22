@@ -35,7 +35,7 @@ public class LagreNyttNotatActivity extends AppCompatActivity {
         String[] liste = {overskrift.getText().toString(), notatet.getText().toString()};
 
         new EndpointsAsyncTask().execute(new Pair<Context, String[]>(this, liste));
-        
+
     }
 
 }

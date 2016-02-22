@@ -12,8 +12,12 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+
+import java.util.Date;
 
 import javax.inject.Named;
 
@@ -31,18 +35,24 @@ public class MyEndpoint {
 
     /** A simple endpoint method that takes a name and says Hi back */
     @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("overskrift") String overskrift, @Named("notatet") String notatet) {
+    public MyBean sayHi(@Named("overskrift") String overskrift, @Named("notatet") String notatet,
+                        @Named("enhetsID") String enhetsID) {
         MyBean response = new MyBean();
-
+        Date dato = new Date();
         //response.setData("Hi, " + name);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+        //MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
 
-        Entity notatInn = new Entity("Notat","jfisaofiaiofoia");
+        Key k = KeyFactory.createKey("Notat", overskrift+enhetsID+dato.toString());
+
+        Entity notatInn = new Entity("Notat", k);
         notatInn.setProperty("overskrift", overskrift);
         notatInn.setProperty("notatet", notatet);
+        notatInn.setProperty("datoOpprettet", dato);
+        notatInn.setProperty("enhetsID", enhetsID);
         datastore.put(notatInn);
-        memcache.put("jfisaofiaiofoia", notatInn);
+
+        //memcache.put("jfisaofiaiofoia", notatInn);
 
         return response;
     }

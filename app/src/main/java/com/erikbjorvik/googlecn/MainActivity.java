@@ -2,13 +2,20 @@ package com.erikbjorvik.googlecn;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +25,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /*Konstanter.enhetsID = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query.Filter propertyFilter = new Query.FilterPredicate("enhetsID",
+                Query.FilterOperator.EQUAL,  Konstanter.enhetsID);
+
+        Query q = new Query("Person").setFilter(propertyFilter);
+
+        // Use PreparedQuery interface to retrieve results
+        PreparedQuery pq = datastore.prepare(q);
+
+
+        for (Entity result : pq.asIterable()) {
+            String overskrift = (String) result.getProperty("overskrift");
+            String notatet = (String) result.getProperty("notatet");
+
+            Log.i("Overskrift: ", overskrift);
+            Log.i("Notatet: ", notatet);
+        }*/
+
     }
 
     @Override
