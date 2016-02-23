@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/N-cQqoWfNDI19t5Ole3sQbqQTv8\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/ybWgrM-PuCuH6TXqBBfWsSeFanM\"",
  "discoveryVersion": "v1",
  "id": "myApi:v1",
  "name": "myApi",
@@ -86,9 +86,14 @@
  "methods": {
   "sayHi": {
    "id": "myApi.sayHi",
-   "path": "{overskrift}/{notatet}",
+   "path": "{overskrift}/{notatet}/{enhetsID}",
    "httpMethod": "POST",
    "parameters": {
+    "enhetsID": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    },
     "notatet": {
      "type": "string",
      "required": true,
@@ -102,7 +107,8 @@
    },
    "parameterOrder": [
     "overskrift",
-    "notatet"
+    "notatet",
+    "enhetsID"
    ],
    "response": {
     "$ref": "MyBean"

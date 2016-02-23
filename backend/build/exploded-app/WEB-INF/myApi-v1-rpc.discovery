@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/N-cQqoWfNDI19t5Ole3sQbqQTv8\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/ybWgrM-PuCuH6TXqBBfWsSeFanM\"",
  "discoveryVersion": "v1",
  "id": "myApi:v1",
  "name": "myApi",
@@ -85,6 +85,10 @@
   "myApi.sayHi": {
    "id": "myApi.sayHi",
    "parameters": {
+    "enhetsID": {
+     "type": "string",
+     "required": true
+    },
     "notatet": {
      "type": "string",
      "required": true
@@ -96,7 +100,8 @@
    },
    "parameterOrder": [
     "overskrift",
-    "notatet"
+    "notatet",
+    "enhetsID"
    ],
    "returns": {
     "$ref": "MyBean"

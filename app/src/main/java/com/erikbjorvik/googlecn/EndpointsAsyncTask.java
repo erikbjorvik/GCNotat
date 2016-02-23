@@ -2,6 +2,7 @@ package com.erikbjorvik.googlecn;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -39,9 +40,10 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String[]>, Void, String
 
         context = params[0].first;
         String[] name = params[0].second;
-
+        String enhetsID = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
         try {
-            return myApiService.sayHi(name[0],name[1]).execute().getData();
+            return myApiService.sayHi(name[0],name[1], enhetsID).execute().getData();
         } catch (IOException e) {
             return e.getMessage();
         }
