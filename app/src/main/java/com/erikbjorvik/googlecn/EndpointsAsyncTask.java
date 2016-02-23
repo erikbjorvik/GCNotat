@@ -43,7 +43,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String[]>, Void, String
         String enhetsID = Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         try {
-            return myApiService.sayHi(name[0],name[1], enhetsID).execute().getData();
+            return myApiService.lagre(name[0],name[1], enhetsID).execute().toString();
         } catch (IOException e) {
             return e.getMessage();
         }

@@ -12,12 +12,16 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Named;
 
@@ -34,11 +38,11 @@ import javax.inject.Named;
 public class MyEndpoint {
 
     /** A simple endpoint method that takes a name and says Hi back */
-    @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("overskrift") String overskrift, @Named("notatet") String notatet,
+    @ApiMethod(name = "lagre",httpMethod = ApiMethod.HttpMethod.POST)
+    public Notat lagre(@Named("overskrift") String overskrift, @Named("notatet") String notatet,
                         @Named("enhetsID") String enhetsID) {
 
-        MyBean response = new MyBean();
+        Notat response = new Notat();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
              Date dato = new Date();
         Key k = KeyFactory.createKey("Notat", overskrift + enhetsID + dato.toString());
@@ -46,10 +50,40 @@ public class MyEndpoint {
         Entity notatInn = new Entity("Notat", k);
         notatInn.setProperty("overskrift", overskrift);
         notatInn.setProperty("notatet", notatet);
+        notatInn.setProperty("dato", new Date());
         notatInn.setProperty("enhetsID", enhetsID);
         datastore.put(notatInn);
 
         return response;
+    }
+
+    @ApiMethod(name = "hentNotater",httpMethod = ApiMethod.HttpMethod.GET)
+    public List<Entity> hentNotater(@Named("enhetsID") String enhetsID) {
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query.Filter enhetsIDFilter =
+                new Query.FilterPredicate("enhetsID",
+                        Query.FilterOperator.EQUAL,
+                        enhetsID);
+
+
+        Query q = new Query("Notat").setFilter(enhetsIDFilter);
+
+        PreparedQuery pq = datastore.prepare(q);
+        /*Notat response = new Notat();
+
+
+        for (Entity result : pq.asIterable()) {
+            String overskrift = (String) result.getProperty("overskrift");
+            String notatet = (String) result.getProperty("notatet");
+            Date dato = (Date) result.getProperty("dato");
+
+
+            response.setData(overskrift, notatet, dato, enhetsID);
+        }
+
+        return response;*/
+        return pq.asList(FetchOptions.Builder.withLimit(5));
     }
 
 }
