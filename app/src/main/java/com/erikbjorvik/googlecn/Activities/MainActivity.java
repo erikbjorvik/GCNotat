@@ -30,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        String enhetsID = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        HenteAsyncTask hasync = new HenteAsyncTask(getFragmentManager().findFragmentById(R.id.listeFrag), this);
+        hasync.execute(new Pair<Context, String>(this, enhetsID));
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);

@@ -42,16 +42,18 @@ public class MyEndpoint {
     public Notat lagre(@Named("overskrift") String overskrift, @Named("notatet") String notatet,
                         @Named("enhetsID") String enhetsID) {
 
-        Notat response = new Notat();
+        Notat response = new Notat(overskrift,notatet,new Date(),enhetsID);
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-             Date dato = new Date();
-        Key k = KeyFactory.createKey("Notat", overskrift + enhetsID + dato.toString());
+
+        Key k = KeyFactory.createKey("Notat", overskrift + enhetsID + response.getDato().toString());
 
         Entity notatInn = new Entity("Notat", k);
-        notatInn.setProperty("overskrift", overskrift);
-        notatInn.setProperty("notatet", notatet);
+
+        notatInn.setProperty("overskrift", response.getOverskrift());
+        notatInn.setProperty("notatet", response.getNotatet());
         notatInn.setProperty("dato", new Date());
-        notatInn.setProperty("enhetsID", enhetsID);
+        notatInn.setProperty("enhetsID", response.getEnhetsID());
         datastore.put(notatInn);
 
         return response;

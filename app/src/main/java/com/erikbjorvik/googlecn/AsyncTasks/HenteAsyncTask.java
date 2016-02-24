@@ -1,9 +1,11 @@
 package com.erikbjorvik.googlecn.AsyncTasks;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.ArrayAdapter;
@@ -23,6 +25,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by erikbjorvik on 23.02.16.
@@ -32,10 +38,13 @@ public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, Strin
     private static MyApi myApiService = null;
     private Context context;
     private Fragment view;
+    private Activity activity;
 
-    public HenteAsyncTask(Fragment view, Context context) {
+    public HenteAsyncTask(Fragment view, Context context/*, Activity activity*/) {
+
         this.view = view;
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -80,11 +89,12 @@ public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, Strin
             JSONArray arr = (JSONArray) jsonObject.get("items");
             Log.i("ARRE", arr.toString());
 
-            String[] retur = null;
+            String[] retur = new String[arr.size()];
 
             for (int i = 0; i < arr.size(); i++) {
                 JSONObject cur = (JSONObject) arr.get(i);
                 JSONObject prop = (JSONObject) cur.get("properties");
+                retur[i] = ((String)prop.get("overskrift"));
                 //retur[i] = (String) prop.get("overskrift");
                 Log.i("propper", prop.toString());
 
@@ -92,7 +102,12 @@ public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, Strin
 
             //ListeFragment lf = (ListeFragment) view;
 
-            String[] liste = {"Svinekuk", "Svinefitte"};
+
+            DataSingleton.getInstance().setListe(retur);
+            ListeFragment lf = (ListeFragment) view;
+            lf.oppdaterListe();
+
+
             /*DataSingleton.getInstance().setListe(liste);
             ListeFragment lf = (ListeFragment) view;
             lf.ar.clear();

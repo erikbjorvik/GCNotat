@@ -63,8 +63,8 @@ public class Notat {
         this.enhetsID = enhetsID;
     }
 
-    public Notat getData() {
-        return this;
+    public String getData() {
+        return this.toString();
     }
 
     @Override

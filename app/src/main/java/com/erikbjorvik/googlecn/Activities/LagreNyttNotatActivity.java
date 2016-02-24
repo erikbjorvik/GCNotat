@@ -1,6 +1,7 @@
 package com.erikbjorvik.googlecn.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,6 +39,9 @@ public class LagreNyttNotatActivity extends AppCompatActivity {
         String[] liste = {overskrift.getText().toString(), notatet.getText().toString()};
 
         new LagreAsyncTask().execute(new Pair<Context, String[]>(this, liste));
+
+        /*Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         
     }
 
