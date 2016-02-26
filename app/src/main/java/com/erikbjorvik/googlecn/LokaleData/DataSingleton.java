@@ -7,7 +7,8 @@ import org.json.simple.JSONObject;
  */
 public class DataSingleton {
     private static DataSingleton obj = null;
-    private String[] liste = {"Kuk", "Vajinder"};
+    private String[] liste = {"Ingen notater å vise."};
+    private JSONObject[] jsonListe = null;
 
     protected DataSingleton() {
 
@@ -26,4 +27,13 @@ public class DataSingleton {
     public void setListe(String[] liste) {
         this.liste = liste;
     }
+
+    public JSONObject[] getJsonListe() {
+        return jsonListe;
+    }
+
+    public void setJsonListe(JSONObject[] jsonListe) {
+        this.jsonListe = jsonListe;
+    }
+
 }

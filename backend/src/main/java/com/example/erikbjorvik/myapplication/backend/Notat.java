@@ -7,21 +7,23 @@ public class Notat {
 
     private String overskrift;
     private String notatet;
-    private Date dato;
+    private String datostreng;
     private String enhetsID;
+    private String token;
 
     public Notat() {
         this.overskrift = "";
         this.notatet = "";
-        this.dato = null;
+        this.datostreng = "";
         this.enhetsID = "";
     }
 
-    public Notat(String overskrift, String notatet, Date dato, String enhetsID) {
+    public Notat(String overskrift, String notatet, String dato, String enhetsID, String token) {
         this.overskrift = overskrift;
         this.notatet = notatet;
-        this.dato = dato;
+        this.datostreng = dato;
         this.enhetsID = enhetsID;
+        this.token = token;
     }
 
     public String getOverskrift() {
@@ -40,12 +42,12 @@ public class Notat {
         this.notatet = notatet;
     }
 
-    public Date getDato() {
-        return dato;
+    public String getDato() {
+        return datostreng;
     }
 
-    public void setDato(Date dato) {
-        this.dato = dato;
+    public void setDato(String dato) {
+        this.datostreng = dato;
     }
 
     public String getEnhetsID() {
@@ -56,10 +58,10 @@ public class Notat {
         this.enhetsID = enhetsID;
     }
 
-    public void setData(String overskrift, String notatet, Date dato, String enhetsID) {
+    public void setData(String overskrift, String notatet, String dato, String enhetsID) {
         this.overskrift = overskrift;
         this.notatet = notatet;
-        this.dato = dato;
+        this.datostreng = dato;
         this.enhetsID = enhetsID;
     }
 
@@ -67,12 +69,28 @@ public class Notat {
         return this.toString();
     }
 
+    public String getDatostreng() {
+        return datostreng;
+    }
+
+    public void setDatostreng(String datostreng) {
+        this.datostreng = datostreng;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
         return "Notat{" +
                 "overskrift='" + overskrift + '\'' +
                 ", notatet='" + notatet + '\'' +
-                ", dato=" + dato +
+                ", dato=" + datostreng +
                 ", enhetsID='" + enhetsID + '\'' +
                 '}';
     }

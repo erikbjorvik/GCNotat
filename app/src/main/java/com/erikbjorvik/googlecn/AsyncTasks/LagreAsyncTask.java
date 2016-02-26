@@ -3,6 +3,7 @@ package com.erikbjorvik.googlecn.AsyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -42,15 +43,13 @@ public class LagreAsyncTask extends AsyncTask<Pair<Context, String[]>, Void, Str
         String[] name = params[0].second;
         String enhetsID = Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+        Log.i("Lagrer notat ", name[0] +" "+ name[1] +" "+ enhetsID +" "+ name[2]);
+
         try {
-            return myApiService.lagre(name[0],name[1], enhetsID).execute().toString();
+            return myApiService.lagre(/*name[0], */name[1], enhetsID, name[2]).execute().toString();
         } catch (IOException e) {
             return e.getMessage();
         }
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-    }
 }

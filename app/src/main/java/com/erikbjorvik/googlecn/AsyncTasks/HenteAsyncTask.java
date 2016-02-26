@@ -90,31 +90,23 @@ public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, Strin
             Log.i("ARRE", arr.toString());
 
             String[] retur = new String[arr.size()];
+            JSONObject[] jsonListe = new JSONObject[arr.size()];
 
             for (int i = 0; i < arr.size(); i++) {
                 JSONObject cur = (JSONObject) arr.get(i);
                 JSONObject prop = (JSONObject) cur.get("properties");
                 retur[i] = ((String)prop.get("overskrift"));
+                jsonListe[i] = (JSONObject) prop;
                 //retur[i] = (String) prop.get("overskrift");
                 Log.i("propper", prop.toString());
 
             }
 
-            //ListeFragment lf = (ListeFragment) view;
-
-
             DataSingleton.getInstance().setListe(retur);
+            DataSingleton.getInstance().setJsonListe(jsonListe);
+
             ListeFragment lf = (ListeFragment) view;
             lf.oppdaterListe();
-
-
-            /*DataSingleton.getInstance().setListe(liste);
-            ListeFragment lf = (ListeFragment) view;
-            lf.ar.clear();
-            lf.ar = new ArrayAdapter<String>(lf.activity,
-                    android.R.layout.simple_list_item_activated_1, DataSingleton.getInstance().getListe());
-            lf.ar.notifyDataSetChanged();*/
-            //lf.ad.notifyDataSetChanged();
 
         } catch (ParseException e) {
 

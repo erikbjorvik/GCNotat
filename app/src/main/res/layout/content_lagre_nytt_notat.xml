@@ -25,16 +25,11 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:inputType="textMultiLine"
-            android:ems="10"
+            android:hint="Notat"
+            android:gravity="top"
             android:id="@+id/notatet" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="lagre"
-            android:text="LAGRE FOR FAEN I HELVETE" />
 
 
     </LinearLayout>

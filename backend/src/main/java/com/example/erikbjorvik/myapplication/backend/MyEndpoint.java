@@ -12,16 +12,16 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Named;
 
@@ -39,21 +39,40 @@ public class MyEndpoint {
 
     /** A simple endpoint method that takes a name and says Hi back */
     @ApiMethod(name = "lagre",httpMethod = ApiMethod.HttpMethod.POST)
-    public Notat lagre(@Named("overskrift") String overskrift, @Named("notatet") String notatet,
-                        @Named("enhetsID") String enhetsID) {
+    public Notat lagre(/*@Named("overskrift") String overskrift, */@Named("notatet") String notatet,
+                        @Named("enhetsID") String enhetsID, @Named("token") String token) {
 
-        Notat response = new Notat(overskrift,notatet,new Date(),enhetsID);
+
+        Date dt = new Date();
+        String datoStreng = dt.toString();
+        Notat response = new Notat("hei", notatet,datoStreng,enhetsID, token);
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        Key k = KeyFactory.createKey("Notat", overskrift + enhetsID + response.getDato().toString());
+        //Key henteKey = KeyFactory.stringToKey(response.getEnhetsID() + token);
 
-        Entity notatInn = new Entity("Notat", k);
+        /*Query.Filter keyFilter =
+          new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
+                              Query.FilterOperator.GREATER_THAN, henteKey);
 
-        notatInn.setProperty("overskrift", response.getOverskrift());
+        Query q =  new Query("Person").setFilter(keyFilter);
+        List<Entity> notaterInn = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+
+        if (notaterInn.size()!=0) {
+            datastore.delete(henteKey);
+        }
+                */
+
+
+        Key nyKey = KeyFactory.createKey("Notat", response.getEnhetsID() + token);
+        String kk = KeyFactory.keyToString(nyKey);
+        Entity notatInn = new Entity("Notat", nyKey);
         notatInn.setProperty("notatet", response.getNotatet());
-        notatInn.setProperty("dato", new Date());
+        notatInn.setProperty("overskrift", response.getOverskrift());
+        notatInn.setProperty("dato", response.getDato());
+        notatInn.setProperty("token", response.getToken());
         notatInn.setProperty("enhetsID", response.getEnhetsID());
+
         datastore.put(notatInn);
 
         return response;
@@ -72,20 +91,25 @@ public class MyEndpoint {
         Query q = new Query("Notat").setFilter(enhetsIDFilter);
 
         PreparedQuery pq = datastore.prepare(q);
-        /*Notat response = new Notat();
 
-
-        for (Entity result : pq.asIterable()) {
-            String overskrift = (String) result.getProperty("overskrift");
-            String notatet = (String) result.getProperty("notatet");
-            Date dato = (Date) result.getProperty("dato");
-
-
-            response.setData(overskrift, notatet, dato, enhetsID);
-        }
-
-        return response;*/
         return pq.asList(FetchOptions.Builder.withLimit(5));
     }
+
+    /*@ApiMethod(name = "hentNotat",httpMethod = ApiMethod.HttpMethod.GET)
+    public Entity hentNotat(@Named("overskrift") String overskrift, @Named("notatet") String notatet,
+                           @Named("enhetsID") String enhetsID, @Named("dato") String dato) {
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key k = KeyFactory.createKey("Notat", overskrift + enhetsID + dato);
+        try {
+            Entity notat = datastore.get(k);
+            return notat
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+
+
+
+    }*/
 
 }

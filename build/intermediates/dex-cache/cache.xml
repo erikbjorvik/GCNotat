@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        jar="/Users/erikbjorvik/Documents/Androidprosjekter/Gc/backend/build/libs/backend-android-endpoints.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5b57163a70f866aae1387166c1286d78e77a0fa0">
+        <dex dex="/Users/erikbjorvik/Documents/Androidprosjekter/Gc/app/build/intermediates/pre-dexed/debug/backend-android-endpoints_6f2e2072c4f6f4ea37362b88e3754c0021c68db4.jar" />
+    </item>
+
+</items>

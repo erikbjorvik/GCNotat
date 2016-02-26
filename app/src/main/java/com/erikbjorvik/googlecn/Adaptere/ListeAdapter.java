@@ -3,6 +3,8 @@ package com.erikbjorvik.googlecn.Adaptere;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Entity;
+
 import java.util.HashMap;
 import java.util.List;
 

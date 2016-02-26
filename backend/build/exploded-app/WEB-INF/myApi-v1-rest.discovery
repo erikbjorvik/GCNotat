@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/5biusZDdgSJbiripey4SYqAWOws\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/Nox27Jjs_-oYtd-AAUB47zLgrVI\"",
  "discoveryVersion": "v1",
  "id": "myApi:v1",
  "name": "myApi",
@@ -152,8 +152,10 @@
      "type": "string"
     },
     "dato": {
-     "type": "string",
-     "format": "date-time"
+     "type": "string"
+    },
+    "datostreng": {
+     "type": "string"
     },
     "enhetsID": {
      "type": "string"
@@ -162,6 +164,9 @@
      "type": "string"
     },
     "overskrift": {
+     "type": "string"
+    },
+    "token": {
      "type": "string"
     }
    }
@@ -191,7 +196,7 @@
   },
   "lagre": {
    "id": "myApi.lagre",
-   "path": "lagre/{overskrift}/{notatet}/{enhetsID}",
+   "path": "lagre/{notatet}/{enhetsID}/{token}",
    "httpMethod": "POST",
    "parameters": {
     "enhetsID": {
@@ -204,16 +209,16 @@
      "required": true,
      "location": "path"
     },
-    "overskrift": {
+    "token": {
      "type": "string",
      "required": true,
      "location": "path"
     }
    },
    "parameterOrder": [
-    "overskrift",
     "notatet",
-    "enhetsID"
+    "enhetsID",
+    "token"
    ],
    "response": {
     "$ref": "Notat"
