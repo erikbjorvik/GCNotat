@@ -2,7 +2,6 @@ package com.example.erikbjorvik.myapplication.backend;
 
 import java.util.Date;
 
-/** The object model for the data we are sending through endpoints */
 public class Notat {
 
     private String overskrift;

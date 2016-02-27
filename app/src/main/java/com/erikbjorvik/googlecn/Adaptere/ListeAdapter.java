@@ -11,17 +11,15 @@ import java.util.List;
 /**
  * Created by erikbjorvik on 24.02.16.
  */
-class ListeAdapter extends ArrayAdapter<String> {
+/*class ListeAdapter extends ArrayAdapter<Entity> {
 
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
-    public ListeAdapter(Context context, int textViewResourceId,
-                              List<String> objects) {
+    public ListeAdapter(Context context, int textViewResourceId, List<Entity> objects) {
+
         super(context, textViewResourceId, objects);
 
-        for (int i = 0; i < objects.size(); ++i) {
-            mIdMap.put(objects.get(i), i);
-        }
+
     }
 
     @Override
@@ -37,3 +35,4 @@ class ListeAdapter extends ArrayAdapter<String> {
 
 }
 
+*/

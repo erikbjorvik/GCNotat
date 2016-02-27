@@ -5,15 +5,16 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.ArrayAdapter;
 
-import com.erikbjorvik.googlecn.Activities.MainActivity;
 import com.erikbjorvik.googlecn.Fragmenter.ListeFragment;
 import com.erikbjorvik.googlecn.LokaleData.DataSingleton;
 import com.example.erikbjorvik.myapplication.backend.myApi.MyApi;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Entity;
+
+import com.example.erikbjorvik.myapplication.backend.myApi.model.EntityCollection;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Notat;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
@@ -25,15 +26,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+
 
 /**
  * Created by erikbjorvik on 23.02.16.
  */
-public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, EntityCollection> {
 
     private static MyApi myApiService = null;
     private Context context;
@@ -48,7 +47,7 @@ public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, Strin
     }
 
     @Override
-    protected String doInBackground(Pair<Context, String>... params) {
+    protected EntityCollection doInBackground(Pair<Context, String>... params) {
         if(myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -71,46 +70,23 @@ public class HenteAsyncTask extends AsyncTask<Pair<Context, String>, Void, Strin
         String name = params[0].second;
         String enhetsID = Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+        Log.i("SKJER","ja");
         try {
-            return myApiService.hentNotater(enhetsID).execute().toString();
+            EntityCollection sam = myApiService.hentNotater(enhetsID).execute();
+            Log.i("SKJER", sam.toString());
+            return sam;
 
         } catch (IOException e) {
             return null;
         }
     }
 
-    protected void onPostExecute(String res) {
-        JSONParser parser = new JSONParser();
-
-        try {
-
-            Object obj = parser.parse(res);
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray arr = (JSONArray) jsonObject.get("items");
-            Log.i("ARRE", arr.toString());
-
-            String[] retur = new String[arr.size()];
-            JSONObject[] jsonListe = new JSONObject[arr.size()];
-
-            for (int i = 0; i < arr.size(); i++) {
-                JSONObject cur = (JSONObject) arr.get(i);
-                JSONObject prop = (JSONObject) cur.get("properties");
-                retur[i] = ((String)prop.get("overskrift"));
-                jsonListe[i] = (JSONObject) prop;
-                //retur[i] = (String) prop.get("overskrift");
-                Log.i("propper", prop.toString());
-
-            }
-
-            DataSingleton.getInstance().setListe(retur);
-            DataSingleton.getInstance().setJsonListe(jsonListe);
-
-            ListeFragment lf = (ListeFragment) view;
-            lf.oppdaterListe();
-
-        } catch (ParseException e) {
-
-        }
+    protected void onPostExecute(EntityCollection respons) {
+        Log.i("FANT","ja");
+        Log.i("entiet", respons.toString());
+        DataSingleton.getInstance().setEntitetsListe(respons);
+        ListeFragment lf = (ListeFragment) view;
+        lf.oppdaterListe();
 
     }
 }

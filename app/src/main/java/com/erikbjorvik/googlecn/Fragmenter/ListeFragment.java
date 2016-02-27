@@ -15,11 +15,15 @@ import android.widget.ListView;
 import com.erikbjorvik.googlecn.Activities.LagreNyttNotatActivity;
 import com.erikbjorvik.googlecn.LokaleData.DataSingleton;
 import com.erikbjorvik.googlecn.R;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Entity;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.EntityCollection;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Notat;
 
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,46 +31,51 @@ import java.util.List;
  */
 public class ListeFragment extends ListFragment {
 
-    public final static String EXTRA_OVERSKRIFT = "com.erikbjorvik.googlecn.overskrift";
-    public final static String EXTRA_NOTATET = "com.erikbjorvik.googlecn.notatet";
-    public final static String EXTRA_DATO = "com.erikbjorvik.googlecn.dato";
-    public final static String EXTRA_TOKEN = "com.erikbjorvik.googlecn.token";
+    public final static String VALGT_ENTITETS_NR = "com.erikbjorvik.googlecn.entitetsNr";
 
 
-    boolean mDualPane;
+
     int mCurCheckPosition = 0;
     public ArrayAdapter<String> adap;
-    List<String> items = new ArrayList<String>(Arrays.asList(DataSingleton.getInstance().getListe()));
+    List<String> items = new ArrayList<String>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         // Populate list with our static array of title
-        String[] liste = DataSingleton.getInstance().getListe();
 
+        EntityCollection ec = DataSingleton.getInstance().getEntitetsListe();
+
+        try {
+            for (int i = 0; i < ec.getItems().size(); i++) {
+                items.add(ec.getItems().get(i).getProperties().get("overskrift").toString());
+            }
+        }catch (Exception e) {
+            Log.w("Ikke denne gangen", "du");
+        }
 
         adap = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_activated_1, liste);
+                android.R.layout.simple_list_item_activated_1,items);
+
         setListAdapter(adap);
 
     }
 
     public void oppdaterListe() {
+        EntityCollection ec = DataSingleton.getInstance().getEntitetsListe();
 
-        List<String> items = new ArrayList<String>(Arrays.asList(DataSingleton.getInstance().getListe()));
-        adap = new ArrayAdapter<String>(getActivity(),
-                R.layout.fragment_liste, items);
-        setListAdapter(adap);
-/*
-        if (items.size()>0) {
+        try {
             adap.clear();
-            for (int i = 0; i < items.size(); i++) {
-                adap.insert(items.get(i), i);
-                Log.i("FITTE INN", "JADAD");
-            }*/
+            for (int i = 0; i < ec.getItems().size(); i++) {
+                String inn = ec.getItems().get(i).getProperties().get("overskrift").toString();
+                adap.insert(inn, i);
+                Log.i("opp s iterasjon....", items.get(i));
+            }
             adap.notifyDataSetChanged();
-        //}
+        }catch (Exception e) {
+            Log.w("Ikke denne gangen", "du");
+        }
 
     }
 
@@ -87,18 +96,9 @@ public class ListeFragment extends ListFragment {
 
     public void onListItemClick (ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Log.i("Du trøkka på ", position + " / " + id);
-        Log.i("JSON Fisk: ", DataSingleton.getInstance().getJsonListe()[position].toString());
-
-
-        JSONObject jObj = DataSingleton.getInstance().getJsonListe()[position];
-
         Intent intent = new Intent(getActivity(), LagreNyttNotatActivity.class);
-        //intent.putExtra(EXTRA_OVERSKRIFT, (String) jObj.get("overskrift"));
-        intent.putExtra(EXTRA_NOTATET, (String) jObj.get("notatet"));
-        //intent.putExtra(EXTRA_DATO, (String) jObj.get("dato"));
-        intent.putExtra(EXTRA_TOKEN, (String) jObj.get("token"));
-
+        intent.putExtra(VALGT_ENTITETS_NR, position);
+        Log.i("Du trøkka på ", position + " / " + id);
         startActivity(intent);
 
     }

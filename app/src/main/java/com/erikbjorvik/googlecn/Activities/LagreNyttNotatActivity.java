@@ -11,17 +11,19 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.erikbjorvik.googlecn.AsyncTasks.LagreAsyncTask;
 import com.erikbjorvik.googlecn.Fragmenter.ListeFragment;
+import com.erikbjorvik.googlecn.LokaleData.DataSingleton;
 import com.erikbjorvik.googlecn.R;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Entity;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.JsonMap;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Date;
 
 public class LagreNyttNotatActivity extends AppCompatActivity {
 
+    public String key = "-";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,46 +32,58 @@ public class LagreNyttNotatActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
-
-        String notatet = intent.getStringExtra(ListeFragment.EXTRA_NOTATET);
-
-        if (intent.hasExtra(ListeFragment.EXTRA_NOTATET)) {
-            EditText notatET = (EditText) findViewById(R.id.notatet);
-            notatET.setText(notatet);
-        }
+        setView();
 
     }
 
-    public void lagre(View view) {
-        EditText overskrift = (EditText) findViewById(R.id.overskrift);
-        EditText notatet = (EditText) findViewById(R.id.notatet);
-        String[] liste = new String[3];
+    public void setView() {
         Intent intent = getIntent();
 
-        liste[0] = overskrift.getText().toString();
-        liste[1] = notatet.getText().toString();
+        if (intent.hasExtra(ListeFragment.VALGT_ENTITETS_NR)) {
+            int entitetsNr = intent.getExtras().getInt(ListeFragment.VALGT_ENTITETS_NR);
 
-        if (intent.hasExtra(ListeFragment.EXTRA_NOTATET)) {
+            Entity entity = DataSingleton.getInstance().getEntitetsListe().getItems().get(entitetsNr);
+            JsonMap notat = entity.getProperties();
+            EditText overskriftET = (EditText) findViewById(R.id.overskrift);
+            EditText notatET = (EditText) findViewById(R.id.notatet);
 
+            overskriftET.setText((String) notat.get("overskrift"));
+            notatET.setText((String) notat.get("notatet").toString());
 
-            Log.i("Dette er en endring", "ja");
-            liste[2] = intent.getStringExtra(ListeFragment.EXTRA_TOKEN);
+            this.key = (String) entity.getProperties().get("token");
         }
-
         else {
-            Log.i("Dette er en NYYYY", "ja");
-            SecureRandom random = new SecureRandom();
-            String token = new BigInteger(130, random).toString(32);
-            liste[2] = token;
+            this.key ="-";
         }
+    }
 
-        Log.i("Dette er liste2:",liste[2]);
+    public void onResume() {
+        super.onResume();
+        setView();
+    }
 
-        new LagreAsyncTask().execute(new Pair<Context, String[]>(this, liste));
+    public void lagre(View view) {
 
-        Intent intentForside = new Intent(this, MainActivity.class);
-        startActivity(intentForside);
+        EditText overskrift = (EditText) findViewById(R.id.overskrift);
+        EditText notatet = (EditText) findViewById(R.id.notatet);
+
+        if (overskrift.getText().toString().equals(""))
+            Toast.makeText(getBaseContext(),"Legg til en overskrift!", Toast.LENGTH_SHORT).show();
+        else if (notatet.getText().toString().equals(""))
+            Toast.makeText(getBaseContext(),"Legg til notattekst!", Toast.LENGTH_SHORT).show();
+        else {
+            String[] liste = new String[3];
+            Intent intent = getIntent();
+
+            liste[0] = overskrift.getText().toString();
+            liste[1] = notatet.getText().toString();
+            liste[2] = this.key;
+            Log.i("Lagrer med key", this.key);
+            new LagreAsyncTask().execute(new Pair<Context, String[]>(this, liste));
+
+            Intent intentForside = new Intent(this, MainActivity.class);
+            startActivity(intentForside);
+        }
 
     }
 

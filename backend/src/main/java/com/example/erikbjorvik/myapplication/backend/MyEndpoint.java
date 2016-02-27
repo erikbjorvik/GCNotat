@@ -19,6 +19,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,38 +41,28 @@ public class MyEndpoint {
 
     /** A simple endpoint method that takes a name and says Hi back */
     @ApiMethod(name = "lagre",httpMethod = ApiMethod.HttpMethod.POST)
-    public Notat lagre(/*@Named("overskrift") String overskrift, */@Named("notatet") String notatet,
-                        @Named("enhetsID") String enhetsID, @Named("token") String token) {
+    public Notat lagre(@Named("overskrift") String overskrift, @Named("notatet")
+        String notatet, @Named("enhetsID") String enhetsID, @Named("token") String token) {
 
 
         Date dt = new Date();
         String datoStreng = dt.toString();
-        Notat response = new Notat("hei", notatet,datoStreng,enhetsID, token);
+        Notat response = new Notat(overskrift, notatet,datoStreng,enhetsID, token);
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        //Key henteKey = KeyFactory.stringToKey(response.getEnhetsID() + token);
-
-        /*Query.Filter keyFilter =
-          new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
-                              Query.FilterOperator.GREATER_THAN, henteKey);
-
-        Query q =  new Query("Person").setFilter(keyFilter);
-        List<Entity> notaterInn = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-
-        if (notaterInn.size()!=0) {
-            datastore.delete(henteKey);
+        if (token.equals("-")) {
+            SecureRandom random = new SecureRandom();
+            token = new BigInteger(130, random).toString(32);
         }
-                */
 
+        Entity notatInn = new Entity("Notat", token);
 
-        Key nyKey = KeyFactory.createKey("Notat", response.getEnhetsID() + token);
-        String kk = KeyFactory.keyToString(nyKey);
-        Entity notatInn = new Entity("Notat", nyKey);
-        notatInn.setProperty("notatet", response.getNotatet());
-        notatInn.setProperty("overskrift", response.getOverskrift());
-        notatInn.setProperty("dato", response.getDato());
-        notatInn.setProperty("token", response.getToken());
+        notatInn.setProperty("overskrift", overskrift);
+        notatInn.setProperty("notatet", notatet);
+        notatInn.setProperty("dato", dt.toString());
+        notatInn.setProperty("token", token);
+        notatInn.setProperty("sisteEndret", dt);
         notatInn.setProperty("enhetsID", response.getEnhetsID());
 
         datastore.put(notatInn);
@@ -88,11 +80,11 @@ public class MyEndpoint {
                         enhetsID);
 
 
-        Query q = new Query("Notat").setFilter(enhetsIDFilter);
+        Query q = new Query("Notat").setFilter(enhetsIDFilter).addSort("dato", Query.SortDirection.DESCENDING);
 
         PreparedQuery pq = datastore.prepare(q);
 
-        return pq.asList(FetchOptions.Builder.withLimit(5));
+        return pq.asList(FetchOptions.Builder.withDefaults());
     }
 
     /*@ApiMethod(name = "hentNotat",httpMethod = ApiMethod.HttpMethod.GET)

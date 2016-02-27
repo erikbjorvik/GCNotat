@@ -46,7 +46,7 @@ public class LagreAsyncTask extends AsyncTask<Pair<Context, String[]>, Void, Str
         Log.i("Lagrer notat ", name[0] +" "+ name[1] +" "+ enhetsID +" "+ name[2]);
 
         try {
-            return myApiService.lagre(/*name[0], */name[1], enhetsID, name[2]).execute().toString();
+            return myApiService.lagre(name[0], name[1], enhetsID, name[2]).execute().toString();
         } catch (IOException e) {
             return e.getMessage();
         }

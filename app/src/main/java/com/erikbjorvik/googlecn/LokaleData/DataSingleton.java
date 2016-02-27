@@ -1,6 +1,11 @@
 package com.erikbjorvik.googlecn.LokaleData;
 
+import com.example.erikbjorvik.myapplication.backend.myApi.model.Entity;
+import com.example.erikbjorvik.myapplication.backend.myApi.model.EntityCollection;
+
 import org.json.simple.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by erikbjorvik on 23.02.16.
@@ -8,7 +13,7 @@ import org.json.simple.JSONObject;
 public class DataSingleton {
     private static DataSingleton obj = null;
     private String[] liste = {"Ingen notater å vise."};
-    private JSONObject[] jsonListe = null;
+    private EntityCollection entitetsListe = null;
 
     protected DataSingleton() {
 
@@ -28,12 +33,11 @@ public class DataSingleton {
         this.liste = liste;
     }
 
-    public JSONObject[] getJsonListe() {
-        return jsonListe;
+    public EntityCollection getEntitetsListe() {
+        return entitetsListe;
     }
 
-    public void setJsonListe(JSONObject[] jsonListe) {
-        this.jsonListe = jsonListe;
+    public void setEntitetsListe(EntityCollection entitetsListe) {
+        this.entitetsListe = entitetsListe;
     }
-
 }
